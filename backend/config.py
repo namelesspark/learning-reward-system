@@ -6,6 +6,7 @@ load_dotenv()
 class Config:
     # API Keys
     OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+    YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY') ## youtube data API 키 받아오기
     
     # Flask
     FLASK_ENV = os.getenv('FLASK_ENV', 'development')
