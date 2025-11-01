@@ -1,79 +1,124 @@
+// ==========================================================
+// 🎥 video-player.js — 유튜브 로드 + STT 상태 연동
+//  - 전역: loadVideo, displayVideo, extractVideoId
+//  - 의존: api.js (window.loadVideoAPI)
+// ==========================================================
+
 // 비디오 로드
 async function loadVideo() {
-    const videoUrl = document.getElementById('videoUrl').value.trim();
-    const loadBtn = document.getElementById('loadBtn');
-    const statusText = document.getElementById('statusText');
-    const statusDot = document.getElementById('statusDot');
+  const urlInput   = document.getElementById('videoUrl');
+  const loadBtn    = document.getElementById('loadBtn');
+  const statusText = document.getElementById('statusText');
+  const statusDot  = document.getElementById('statusDot');
 
-    if (!videoUrl) {
-        alert('유튜브 링크를 입력하세요');
-        return;
-    }
+  if (!urlInput) {
+    alert('입력 요소가 없습니다. index.html을 확인하세요.');
+    return;
+  }
 
-    // 버튼 비활성화
+  const videoUrl = (urlInput.value || '').trim();
+  if (!videoUrl) {
+    alert('유튜브 링크를 입력하세요');
+    return;
+  }
+
+  // 버튼/상태 표시
+  if (loadBtn) {
     loadBtn.disabled = true;
     loadBtn.textContent = '⏳ 로딩 중...';
-    statusText.textContent = '자막 분석 중...';
+  }
+  if (statusText) statusText.textContent = '자막 분석 중...';
 
-    try {
-        // API 호출
-        const data = await loadVideoAPI(videoUrl);
+  try {
+    if (typeof window.loadVideoAPI !== 'function') {
+      throw new Error('STT API가 준비되지 않았습니다 (api.js 로드 순서를 확인).');
+    }
 
-        if (data.success) {
-            // 비디오 표시
-            displayVideo(data.video_info);
+    // Flask 백엔드에 STT 요청
+    const data = await window.loadVideoAPI(videoUrl);
 
-            // 상태 업데이트
-            statusText.textContent = '✓ 자막 분석 완료';
-            statusDot.classList.add('active');
+    if (!data || data.success === false) {
+      throw new Error((data && data.error) || 'STT 서버 요청 실패');
+    }
 
-            // 챗봇/퀴즈 활성화
-            document.getElementById('userInput').disabled = false;
-            document.getElementById('sendBtn').disabled = false;
-            document.getElementById('quizBtn').disabled = false;
+    // 비디오 표시
+    displayVideo(data.video_info);
 
-            // 챗봇에 환영 메시지
-            addChatMessage('assistant', '영상 자막을 분석했습니다! 궁금한 점을 물어보세요. 💡');
+    // 상태 업데이트
+    if (statusText) statusText.textContent = '✓ 자막 분석 완료';
+    if (statusDot)  statusDot.classList.add('active');
 
-            loadBtn.textContent = '✅ 로드 완료';
-            setTimeout(() => {
-                loadBtn.textContent = '📺 영상 로드';
-                loadBtn.disabled = false;
-            }, 2000);
-        }
-    } catch (error) {
-        alert('비디오 로드 실패: ' + error.message);
+    // 챗봇 / 입력 활성화
+    const userInput = document.getElementById('userInput');
+    const sendBtn   = document.getElementById('sendBtn');
+    const quizBtn   = document.getElementById('quizBtn');
+
+    if (userInput) userInput.disabled = false;
+    if (sendBtn)   sendBtn.disabled   = false;
+
+    // 리워드 ON/OFF와 연동하여 퀴즈 버튼 활성화
+    let rewardOn = true;
+    if (typeof window.__frontendRewardOn === 'function') {
+      try { rewardOn = !!window.__frontendRewardOn(); } catch (_) { rewardOn = true; }
+    }
+    if (quizBtn) quizBtn.disabled = !rewardOn;
+
+    // 챗봇에 안내 메시지
+    if (typeof window.addChatMessage === 'function') {
+      window.addChatMessage('assistant', '영상 자막을 분석했습니다! 궁금한 점을 물어보세요. 💡');
+    }
+
+    if (loadBtn) {
+      loadBtn.textContent = '✅ 로드 완료';
+      setTimeout(() => {
         loadBtn.textContent = '📺 영상 로드';
         loadBtn.disabled = false;
-        statusText.textContent = '자막 분석 실패';
+      }, 1200);
     }
+  } catch (error) {
+    alert('비디오 로드 실패: ' + (error && error.message ? error.message : String(error)));
+    if (loadBtn) {
+      loadBtn.textContent = '📺 영상 로드';
+      loadBtn.disabled = false;
+    }
+    if (statusText) statusText.textContent = '자막 분석 실패';
+  }
 }
 
 // 비디오 표시
 function displayVideo(videoInfo) {
-    const videoPlayer = document.getElementById('videoPlayer');
-    
-    videoPlayer.innerHTML = `
-        <iframe 
-            src="${videoInfo.embed_url}" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen>
-        </iframe>
-    `;
+  const videoPlayer = document.getElementById('videoPlayer');
+  if (!videoPlayer) return;
+
+  const embed = (videoInfo && videoInfo.embed_url) ? String(videoInfo.embed_url) : '';
+  if (!embed) return;
+
+  videoPlayer.innerHTML = (
+    '<iframe ' +
+      'src="' + embed + '" ' +
+      'frameborder="0" ' +
+      'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
+      'referrerpolicy="strict-origin-when-cross-origin" ' +
+      'allowfullscreen>' +
+    '</iframe>'
+  );
 }
 
-// URL에서 비디오 ID 추출
+// URL에서 비디오 ID 추출 (필요 시 사용)
 function extractVideoId(url) {
-    const patterns = [
-        /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/,
-        /youtube\.com\/embed\/([^&\n?#]+)/
-    ];
-
-    for (let pattern of patterns) {
-        const match = url.match(pattern);
-        if (match) return match[1];
-    }
-
-    return null;
+  if (!url) return null;
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/,
+    /youtube\.com\/embed\/([^&\n?#]+)/
+  ];
+  for (var i = 0; i < patterns.length; i++) {
+    var m = url.match(patterns[i]);
+    if (m && m[1]) return m[1];
+  }
+  return null;
 }
+
+// 전역 바인딩 (index.html의 onclick="loadVideo()" 대응)
+window.loadVideo = loadVideo;
+window.displayVideo = displayVideo;
+window.extractVideoId = extractVideoId;

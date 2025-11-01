@@ -9,26 +9,32 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(5px);
-    animation: fadeIn 0.3s;
+    animation: fadeIn 0.3s ease-in;
 }
 
+/* 모달 페이드인 애니메이션 */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
+/* 모달 페이드아웃 */
+.modal.hide {
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+    pointer-events: none;
+}
+
+/* 중앙 정렬 상태 (표시 중일 때) */
 .modal.show {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
+/* 모달 본체 */
 .modal-content {
-    background: white;
+    background: #fff;
     border-radius: 20px;
     width: 90%;
     max-width: 600px;
@@ -38,6 +44,7 @@
     animation: slideUp 0.3s ease-out;
 }
 
+/* 모달 등장 시 아래에서 위로 올라오는 애니메이션 */
 @keyframes slideUp {
     from {
         transform: translateY(50px);
@@ -49,6 +56,7 @@
     }
 }
 
+/* 모달 헤더 */
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -60,8 +68,10 @@
 .modal-header h2 {
     font-size: 24px;
     color: #333;
+    margin: 0;
 }
 
+/* 닫기 버튼 (×) */
 .close-btn {
     width: 36px;
     height: 36px;
@@ -71,7 +81,7 @@
     font-size: 24px;
     color: #666;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -82,12 +92,14 @@
     transform: rotate(90deg);
 }
 
+/* 모달 본문 */
 .modal-body {
     padding: 30px;
     overflow-y: auto;
     max-height: calc(80vh - 180px);
 }
 
+/* 모달 푸터 */
 .modal-footer {
     padding: 20px 30px;
     border-top: 1px solid #f0f0f0;
@@ -120,9 +132,9 @@
     border: 2px solid #e0e0e0;
     border-radius: 12px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
     font-size: 15px;
-    background: white;
+    background: #fff;
 }
 
 .quiz-option:hover {
@@ -134,20 +146,21 @@
 .quiz-option.selected {
     border-color: #667eea;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    color: #fff;
     font-weight: 600;
 }
 
+/* 퀴즈 제출 버튼 */
 .submit-btn {
     padding: 14px 32px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    color: #fff;
     border: none;
     border-radius: 12px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
 }
 
 .submit-btn:hover {
@@ -181,9 +194,9 @@
 }
 
 .result-header h2 {
-    color: white;
+    color: #fff;
     font-size: 28px;
-    margin-bottom: 10px;
+    margin: 0 0 10px;
 }
 
 .result-message {
@@ -227,20 +240,54 @@
     color: #333;
 }
 
+/* 결과창 닫기 버튼 */
 .continue-btn {
     padding: 14px 32px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    color: #fff;
     border: none;
     border-radius: 12px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
     width: 100%;
 }
 
 .continue-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+/* ========== 스크롤 스타일 개선 ========== */
+.modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+/* ========== 반응형 ========== */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        max-height: 85vh;
+    }
+
+    .quiz-question {
+        font-size: 16px;
+        padding: 16px;
+    }
+
+    .submit-btn,
+    .continue-btn {
+        font-size: 15px;
+        padding: 12px 24px;
+    }
 }
