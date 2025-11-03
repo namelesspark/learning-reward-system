@@ -2,12 +2,12 @@
 .env
 
 # 백엔드 폴더 내 .env만 무시하려면
-/backend/.env
+prototype/backend/.env
 
 # 가상환경 폴더 무시
-venv/
-env/
+prototype/venv/
+prototype/env/
 
 # 빌드 결과물 무시
-dist/
-build/
+prototype/dist/
+prototype/build/
