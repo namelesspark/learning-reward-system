@@ -3,38 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Learning Reward System - Dashboard</title>
-  <link rel="stylesheet" href="dashboard.css">
+  <title>상점</title>
+  <link rel="stylesheet" href="store.css">
 </head>
 <body>
   <div class="container">
-    <div class="dashboard-box">
+    <div class="store-box">
       <header class="top-bar">
-        <div class="user-info">
-          <button id="userBtn" class="user-btn">👤 <span id="userName">사용자</span></button>
-          <div id="logoutBox" class="logout-box hidden">
-            <button id="logoutBtn" class="logout-btn">로그아웃</button>
-          </div>
-        </div>
+        <button id="backBtn" class="back-btn">← 이전으로</button>
         <div class="score-box">
-          <span>현재 점수: </span><span id="userScore">0</span>
+          내 점수: <span id="userScore">0</span>
         </div>
       </header>
 
-      <main class="menu-area">
-        <h1>🎓 학습 리워드 시스템</h1>
-        <p class="subtitle">메뉴를 선택하세요</p>
-        <div class="menu-buttons">
-          <button class="menu-btn" onclick="goToRanking()">🏆 내 점수 랭킹</button>
-          <button class="menu-btn" onclick="goToLecture()">📚 학습하기</button>
-          <button class="menu-btn" onclick="goToStore()">🛍️ 상점</button>
-        </div>
-      </main>
+      <h1>🛍️ 상점</h1>
+      <p class="subtitle">원하는 상품을 선택하고 점수로 결제하세요</p>
+
+      <div id="productsGrid" class="products-grid">
+        <!-- 상품이 동적으로 추가됩니다 -->
+      </div>
+
+      <div class="actions">
+        <button id="purchaseBtn" class="purchase-btn">결제하기</button>
+      </div>
     </div>
   </div>
 
-  <!-- Firebase SDK 
-  <script type="module">
+  <!-- Firebase SDK -->
+ <!-- <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
     import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
     import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
@@ -54,14 +50,8 @@
     window.db = getFirestore(app);
   </script> -->
 
-
   <script type="module" src="init-firebase.js"></script>
-<!-- 페이지 스크립트 다음 -->
-  <script type="module" src="dashboard.js"></script>
-
+  <script type="module" src="store.js"></script>
 
 </body>
 </html>
-
-
-module

@@ -21,6 +21,7 @@
                 
                 <div class="links">
                     <a href="#" onclick="showSignup()">회원가입</a>
+                    <a href="#" onclick="showFindId()">아이디 찾기</a>
                     <a href="#" onclick="showFindPassword()">비밀번호 찾기</a>
                 </div>
             </div>
@@ -50,10 +51,23 @@
                     <a href="#" onclick="showLogin()">로그인으로 돌아가기</a>
                 </div>
             </div>
+            <!-- 아이디 찾기 폼 -->
+            <div id="findIdForm" class="form-container hidden">
+                <h2>아이디 찾기</h2>
+                <p>가입 시 입력한 이름과 이메일 일부를 이용해 아이디(이메일)를 확인합니다.</p>
+                <input type="text" id="findName" placeholder="이름">
+                <input type="email" id="findPartialEmail" placeholder="이메일 일부 (예: example@)">
+                <button onclick="findId()">아이디 찾기</button>
+                
+                <div class="links">
+                    <a href="#" onclick="showLogin()">로그인으로 돌아가기</a>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <!-- Firebase SDK -->
+    <!-- Firebase SDK 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
@@ -74,8 +88,8 @@
         const app = initializeApp(firebaseConfig);
         window.auth = getAuth(app);
         window.db = getFirestore(app);
-    </script>
-    
-    <script type="module" src="auth.js"></script>
+    </script> -->
+    <script type="module" src="init-firebase.js"></script>
+    <script type="module" src="login.js"></script>
 </body>
 </html>

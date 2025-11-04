@@ -1,1 +1,61 @@
-<-- 강의 페이지 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>학습하기 - 링크 입력</title>
+  <link rel="stylesheet" href="lecture.css">
+</head>
+<body>
+  <div class="container">
+    <div class="lecture-box">
+      <header class="top-bar">
+        <button id="backBtn" class="back-btn">← 이전으로</button>
+        <div class="user-info">
+          <button id="userBtn" class="user-btn">👤 <span id="userName">사용자</span></button>
+          <div id="logoutBox" class="logout-box hidden">
+            <button id="logoutBtn" class="logout-btn">로그아웃</button>
+          </div>
+        </div>
+        <div class="score-box">내 점수: <span id="userScore">0</span></div>
+      </header>
+
+      <main class="input-area">
+        <h1>🎓 Learning Reward System</h1>
+        <p class="subtitle">유튜브 강의 링크를 입력하세요</p>
+
+        <div class="search-bar">
+          <input id="videoUrl" type="text" placeholder="https://www.youtube.com/watch?v=..." />
+          <button id="loadBtn">영상 로드</button>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ✅ Firebase 공통 초기화 -->
+  <script type="module" src="init-firebase.js"></script>
+
+  <!-- ✅ 학습 페이지 전용 스크립트 -->
+  <script type="module" src="lecture.js"></script>
+</body>
+</html>
+
+
+  <!-- Firebase 초기화 
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAmGKMQT1TEPRKVl5ptIbWXoOjHjRysWiY",
+      authDomain: "lrsystem-91ca1.firebaseapp.com",
+      projectId: "lrsystem-91ca1",
+      storageBucket: "lrsystem-91ca1.firebasestorage.app",
+      messagingSenderId: "899913314717",
+      appId: "1:899913314717:web:643bd6abd196f10789bf74"
+    };
+    const app = initializeApp(firebaseConfig);
+    window.auth = getAuth(app);
+    window.db = getFirestore(app);
+  </script> -->

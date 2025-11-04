@@ -3,33 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Learning Reward System - Dashboard</title>
-  <link rel="stylesheet" href="dashboard.css">
+  <title>랭킹</title>
+  <link rel="stylesheet" href="ranking.css">
 </head>
 <body>
   <div class="container">
-    <div class="dashboard-box">
+    <div class="ranking-box">
       <header class="top-bar">
+        <button id="backBtn" class="back-btn">← 이전으로</button>
+
         <div class="user-info">
           <button id="userBtn" class="user-btn">👤 <span id="userName">사용자</span></button>
           <div id="logoutBox" class="logout-box hidden">
             <button id="logoutBtn" class="logout-btn">로그아웃</button>
           </div>
         </div>
+
         <div class="score-box">
-          <span>현재 점수: </span><span id="userScore">0</span>
+          내 점수: <span id="userScore">0</span>
         </div>
       </header>
 
-      <main class="menu-area">
-        <h1>🎓 학습 리워드 시스템</h1>
-        <p class="subtitle">메뉴를 선택하세요</p>
-        <div class="menu-buttons">
-          <button class="menu-btn" onclick="goToRanking()">🏆 내 점수 랭킹</button>
-          <button class="menu-btn" onclick="goToLecture()">📚 학습하기</button>
-          <button class="menu-btn" onclick="goToStore()">🛍️ 상점</button>
+      <section class="my-rank">
+        <h2>내 랭킹</h2>
+        <div class="rank-card">
+          <div>순위: <span id="myRank">-</span> 위</div>
+          <div>아이디: <span id="myId">-</span></div>
+          <div>점수: <span id="myScore">-</span></div>
         </div>
-      </main>
+      </section>
+
+      <section class="rank-list">
+        <h2>전체 랭킹</h2>
+        <div id="rankingContainer" class="ranking-container">
+          <!-- 랭킹 목록이 여기에 표시됩니다 -->
+
+        </div>
+        <!-- 🔄 수동 새로고침 버튼 + 최근 갱신 시간 -->
+        <div class="refresh-box">
+            <button id="refreshBtn" class="refresh-btn">🔄 지금 새로고침</button>
+            <p class="last-update" id="lastUpdateText">최근 갱신: -</p>
+        </div>
+
+      </section>
     </div>
   </div>
 
@@ -54,14 +70,8 @@
     window.db = getFirestore(app);
   </script> -->
 
-
   <script type="module" src="init-firebase.js"></script>
-<!-- 페이지 스크립트 다음 -->
-  <script type="module" src="dashboard.js"></script>
-
+  <script type="module" src="ranking.js"></script>
 
 </body>
 </html>
-
-
-module
