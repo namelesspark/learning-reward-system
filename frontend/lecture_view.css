@@ -1,4 +1,6 @@
-/* 전체 페이지 */
+/* =========================
+   🌐 전체 페이지 구조
+========================= */
 body {
   margin: 0;
   font-family: 'Noto Sans KR', sans-serif;
@@ -7,7 +9,6 @@ body {
   display: flex;
 }
 
-/* 전체 레이아웃: 영상(왼쪽) + 챗봇(오른쪽) */
 .layout {
   display: flex;
   width: 100%;
@@ -87,43 +88,11 @@ body {
   text-align: center;
 }
 
-/* 검색 입력창 */
-.control-bar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+/* 퀴즈 토글 */
+.quiz-toggle {
   margin-top: 20px;
-}
-
-.control-bar input {
-  flex: 1;
-  padding: 12px 16px;
-  border-radius: 10px;
-  border: 2px solid #ddd;
-  font-size: 1rem;
-}
-
-.control-bar button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border: none;
-  color: #fff;
-  padding: 12px 20px;
-  border-radius: 10px;
-  cursor: pointer;
   font-weight: 600;
-}
-
-.quiz-btn {
-  margin-top: 25px;
-  padding: 14px 0;
-  border: none;
-  border-radius: 15px;
-  font-size: 1.1rem;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  background: linear-gradient(45deg, #ff9a9e, #fad0c4);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  color: #333;
 }
 
 /* =========================
@@ -145,7 +114,53 @@ body {
   text-align: center;
 }
 
-/* 채팅 박스 */
+/* =========================
+   💬 챗봇 메시지 (말풍선)
+========================= */
+
+/* 공통 */
+.msg {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  max-width: 80%;
+  word-wrap: break-word;
+  line-height: 1.4;
+  font-size: 0.95rem;
+  animation: fadeIn 0.3s ease-in;
+}
+
+/* 사용자 메시지 (흰색) */
+.msg.user {
+  background: #fff;
+  color: #333;
+  align-self: flex-end;
+  border: 1px solid #ddd;
+}
+
+/* 일반 챗봇 메시지 (회색) */
+.msg.bot {
+  background: #f0f0f0;
+  color: #333;
+  align-self: flex-start;
+}
+
+/* 퀴즈 메시지 (노란색) */
+.msg.quiz {
+  background: #fff8b5;
+  color: #222;
+  align-self: flex-start;
+  border: 1px solid #f5d95c;
+  font-weight: 600;
+}
+
+/* 애니메이션 효과 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 대화창 스크롤 */
 .chat-box {
   flex: 1;
   overflow-y: auto;
@@ -153,26 +168,8 @@ body {
   border-radius: 15px;
   padding: 15px;
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
-}
-
-.msg {
-  margin: 10px 0;
-  padding: 10px 15px;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  line-height: 1.4;
-}
-
-.msg.bot {
-  background: #f0f0f0;
-  color: #333;
-  align-self: flex-start;
-}
-
-.msg.user {
-  background: #667eea;
-  color: white;
-  align-self: flex-end;
+  display: flex;
+  flex-direction: column;
 }
 
 /* 입력창 */
@@ -213,4 +210,52 @@ body {
 .chat-box::-webkit-scrollbar-thumb {
   background: #bbb;
   border-radius: 3px;
+}
+
+/* =========================
+   🎛️ 상단 버튼 (이전/사용자/로그아웃)
+========================= */
+.left-controls, .right-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.back-btn, .user-btn {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border: none;
+  color: white;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.back-btn:hover, .user-btn:hover {
+  transform: scale(1.05);
+}
+
+.logout-box {
+  position: absolute;
+  margin-top: 45px;
+  right: 0;
+}
+
+.logout-box.hidden {
+  display: none;
+}
+
+.logout-btn {
+  background: #ff4d4d;
+  border: none;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.logout-btn:hover {
+  background: #ff6666;
 }
