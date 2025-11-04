@@ -131,7 +131,7 @@ logoutBtn.addEventListener('click', async () => {
 // =======================================
 // ⬅️ 이전으로 가기
 // =======================================
-document.getElementById('backBtn').addEventListener('click', () => {
-  if (refreshInterval) clearInterval(refreshInterval);
-  window.location.href = 'dashboard.html';
+// 🔙 이전으로 가기 버튼
+document.getElementById("backBtn").addEventListener("click", () => {
+  window.location.href = "dashboard.html"; // ✅ 이동 경로
 });

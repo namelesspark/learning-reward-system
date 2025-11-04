@@ -1,82 +1,113 @@
+/* 전체 페이지 */
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
+  margin: 0;
+  font-family: 'Noto Sans KR', sans-serif;
+  background: #fafafa;
+  height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.container {
+/* 전체 레이아웃 */
+.layout {
+  display: flex;
   width: 100%;
-  max-width: 900px;
-  padding: 20px;
+  height: 100vh;
 }
 
-.lecture-box {
-  background: white;
-  border-radius: 20px;
-  padding: 40px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+/* 왼쪽 영상(입력) 영역 */
+.video-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #f9f9f9;
+  padding: 20px 40px;
+  box-sizing: border-box;
+  justify-content: flex-start;
 }
 
-.top-bar {
+.video-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
-.back-btn, .user-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 20px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.logout-box {
-  position: absolute;
-  margin-top: 5px;
-}
-
-.logout-btn {
-  background: #ff4d4d;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 15px;
-  cursor: pointer;
-}
-
-.score-box {
-  font-weight: 600;
+.logo {
+  font-size: 1.4rem;
+  font-weight: 700;
   color: #333;
 }
 
-.search-bar {
+.score-area {
+  display: flex;
+  gap: 10px;
+}
+
+.badge {
+  padding: 8px 14px;
+  border-radius: 20px;
+  color: white;
+  font-weight: 600;
+}
+
+.badge.pink {
+  background: linear-gradient(45deg, #ff758c, #ff7eb3);
+}
+
+.badge.orange {
+  background: linear-gradient(45deg, #f7971e, #ffd200);
+}
+
+/* 입력창 컨테이너 */
+.video-container {
+  flex: 1;
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin-top: 20px;
+  align-items: center;
+  border-radius: 15px;
+  background: white;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
 }
 
-.search-bar input {
+.url-box {
+  text-align: center;
   width: 70%;
-  padding: 15px;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  font-size: 16px;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-.search-bar button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
+.url-box h2 {
+  color: #333;
+}
+
+.url-box input {
+  padding: 14px;
   border-radius: 10px;
-  padding: 15px 20px;
+  border: 2px solid #ccc;
+  font-size: 1rem;
+  outline: none;
+}
+
+.url-box button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 10px;
   font-weight: 600;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+.url-box button:hover {
+  transform: scale(1.05);
+}
+
+.guide-text {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.95rem;
+  color: #666;
 }

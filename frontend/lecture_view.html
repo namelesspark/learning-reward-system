@@ -1,54 +1,77 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>학습하기</title>
-  <link rel="stylesheet" href="lecture_view.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>학습 영상 - Learning Reward System</title>
+  <link rel="stylesheet" href="lecture_view.css" />
 </head>
 <body>
-  <div class="container">
-    <div class="lecture-box">
-      <header class="top-bar">
-        <button id="backBtn" class="back-btn">← 이전으로</button>
-        <div class="user-info">
-          <button id="userBtn" class="user-btn">👤 <span id="userName">사용자</span></button>
-          <div id="logoutBox" class="logout-box hidden">
-            <button id="logoutBtn" class="logout-btn">로그아웃</button>
-          </div>
+  <div class="layout">
+    <!-- 왼쪽: 학습 영상 -->
+    <section class="video-section">
+      <header class="video-header">
+        <h1 class="logo">🎓 Learning Reward System</h1>
+        <div class="score-area">
+          <span class="badge pink">👤 <span id="userName">사용자</span></span>
+          <span class="badge orange">🔥 <span id="userScore">0</span>점</span>
         </div>
-        <div class="score-box">내 점수: <span id="userScore">0</span></div>
       </header>
 
-      <main class="study-layout">
-        <div class="video-area">
-          <iframe id="lectureFrame" frameborder="0" allowfullscreen></iframe>
-          <div class="quiz-toggle">
-            <label>
-              <input type="checkbox" id="quizToggle" checked>
-              🧩 퀴즈 ON/OFF
-            </label>
-          </div>
-        </div>
+      <!-- ✅ 영상만 표시 -->
+      <div class="video-container">
+        <iframe id="lectureFrame" frameborder="0" allowfullscreen></iframe>
+      </div>
 
-        <div class="chat-area">
-          <h3>💬 학습 도우미 챗봇</h3>
-          <div id="chatBox" class="chat-box">
-            <div class="msg bot">안녕하세요! 👋 학습 내용에 대해 질문할 수 있어요.</div>
-          </div>
-          <div class="chat-input">
-            <input id="chatInput" type="text" placeholder="질문을 입력하세요..." />
-            <button id="sendBtn">전송</button>
-          </div>
+      <!-- ✅ 퀴즈 on/off 스위치 -->
+      <div class="quiz-toggle">
+        <label>
+          <input type="checkbox" id="quizToggle" checked />
+          🧩 퀴즈 ON/OFF
+        </label>
+      </div>
+    </section>
+
+    <!-- 오른쪽: 챗봇 영역 -->
+    <aside class="chat-section">
+      <h2>💬 학습 도우미 챗봇</h2>
+      <div class="chat-box" id="chatBox">
+        <div class="msg bot">
+          안녕하세요! 👋 학습 영상에 대해 질문하거나 퀴즈를 풀어보세요.
         </div>
-      </main>
-    </div>
+      </div>
+
+      <div class="chat-input">
+        <input id="chatInput" type="text" placeholder="질문을 입력하세요..." />
+        <button id="sendBtn">전송</button>
+      </div>
+    </aside>
   </div>
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
+    // Firebase 설정 (나중에 실제 값으로 교체)
+    const firebaseConfig = {
+        apiKey: "AIzaSyAmGKMQT1TEPRKVl5ptIbWXoOjHjRysWiY",
+        authDomain: "lrsystem-91ca1.firebaseapp.com",
+        projectId: "lrsystem-91ca1",
+        storageBucket: "lrsystem-91ca1.firebasestorage.app",
+        messagingSenderId: "899913314717",
+        appId: "1:899913314717:web:643bd6abd196f10789bf74",
+        measurementId: "G-ERNPFHHCKM"
+    };
 
-  <script type="module" src="init-firebase.js"></script>
+    // Firebase 초기화
+    const app = initializeApp(firebaseConfig);
+    window.auth = getAuth(app);
+    window.db = getFirestore(app);
+  </script> 
+
+  <!-- Firebase 초기화 -->
+ <!-- <script type="module" src="init-firebase.js"></script> -->
+  <!-- 학습 로직 -->
   <script type="module" src="lecture_view.js"></script>
-
 </body>
 </html>
-

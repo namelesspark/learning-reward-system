@@ -69,6 +69,6 @@ document.getElementById('purchaseBtn').addEventListener('click', async () => {
 });
 
 // 이전으로
-document.getElementById('backBtn').addEventListener('click', () => {
-  window.location.href = 'dashboard.html';
+document.getElementById("backBtn").addEventListener("click", () => {
+  window.location.href = "dashboard.html"; // ✅ 이동 경로
 });

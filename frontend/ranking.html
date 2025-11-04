@@ -49,7 +49,7 @@
     </div>
   </div>
 
-  <!-- Firebase SDK 
+  <!-- Firebase SDK 및 초기화 -->
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
     import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
@@ -68,9 +68,9 @@
     const app = initializeApp(firebaseConfig);
     window.auth = getAuth(app);
     window.db = getFirestore(app);
-  </script> -->
+  </script> 
 
-  <script type="module" src="init-firebase.js"></script>
+  <!-- <script type="module" src="init-firebase.js"></script> -->
   <script type="module" src="ranking.js"></script>
 
 </body>
