@@ -11,19 +11,32 @@
     <!-- 왼쪽: 학습 영상 -->
     <section class="video-section">
       <header class="video-header">
+        <div class="left-controls">
+          <button id="backBtn" class="back-btn">← 이전으로</button>
+        </div>
+
         <h1 class="logo">🎓 Learning Reward System</h1>
-        <div class="score-area">
-          <span class="badge pink">👤 <span id="userName">사용자</span></span>
-          <span class="badge orange">🔥 <span id="userScore">0</span>점</span>
+
+        <div class="right-controls">
+          <button id="userBtn" class="user-btn">👤 <span id="userName">사용자</span></button>
+          <div id="logoutBox" class="logout-box hidden">
+            <button id="logoutBtn" class="logout-btn">로그아웃</button>
+          </div>
         </div>
       </header>
 
-      <!-- ✅ 영상만 표시 -->
+      <!-- ✅ 점수 배지 -->
+      <div class="score-area">
+        <span class="badge pink">👤 <span id="userNameBadge">사용자</span></span>
+        <span class="badge orange">🔥 <span id="userScore">0</span>점</span>
+      </div>
+
+      <!-- ✅ 영상 표시 -->
       <div class="video-container">
         <iframe id="lectureFrame" frameborder="0" allowfullscreen></iframe>
       </div>
 
-      <!-- ✅ 퀴즈 on/off 스위치 -->
+      <!-- ✅ 퀴즈 ON/OFF 스위치 -->
       <div class="quiz-toggle">
         <label>
           <input type="checkbox" id="quizToggle" checked />
@@ -32,7 +45,7 @@
       </div>
     </section>
 
-    <!-- 오른쪽: 챗봇 영역 -->
+    <!-- 오른쪽: 챗봇 -->
     <aside class="chat-section">
       <h2>💬 학습 도우미 챗봇</h2>
       <div class="chat-box" id="chatBox">
@@ -47,31 +60,152 @@
       </div>
     </aside>
   </div>
+
+  <!-- ✅ Firebase 초기화 + 상단 버튼 기능 -->
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-    import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    import { getAuth, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-    // Firebase 설정 (나중에 실제 값으로 교체)
+    // ✅ Firebase 설정
     const firebaseConfig = {
-        apiKey: "AIzaSyAmGKMQT1TEPRKVl5ptIbWXoOjHjRysWiY",
-        authDomain: "lrsystem-91ca1.firebaseapp.com",
-        projectId: "lrsystem-91ca1",
-        storageBucket: "lrsystem-91ca1.firebasestorage.app",
-        messagingSenderId: "899913314717",
-        appId: "1:899913314717:web:643bd6abd196f10789bf74",
-        measurementId: "G-ERNPFHHCKM"
+      apiKey: "AIzaSyAmGKMQT1TEPRKVl5ptIbWXoOjHjRysWiY",
+      authDomain: "lrsystem-91ca1.firebaseapp.com",
+      projectId: "lrsystem-91ca1",
+      storageBucket: "lrsystem-91ca1.appspot.com",
+      messagingSenderId: "899913314717",
+      appId: "1:899913314717:web:643bd6abd196f10789bf74",
+      measurementId: "G-ERNPFHHCKM"
     };
 
-    // Firebase 초기화
+    // ✅ Firebase 초기화
     const app = initializeApp(firebaseConfig);
     window.auth = getAuth(app);
     window.db = getFirestore(app);
-  </script> 
 
-  <!-- Firebase 초기화 -->
- <!-- <script type="module" src="init-firebase.js"></script> -->
-  <!-- 학습 로직 -->
-  <script type="module" src="lecture_view.js"></script>
+    // ✅ 로그인 사용자 상태 확인
+    onAuthStateChanged(window.auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+      } else {
+        const displayName = user.displayName || user.email;
+        document.getElementById("userName").textContent = displayName;
+        document.getElementById("userNameBadge").textContent = displayName;
+
+        // Firestore에서 점수 불러오기
+        const userRef = doc(window.db, "users", user.uid);
+        const snap = await getDoc(userRef);
+        if (snap.exists()) {
+          const data = snap.data();
+          document.getElementById("userScore").textContent = data.totalScore ?? 0;
+        }
+      }
+    });
+
+    // ✅ 상단 버튼
+    const backBtn = document.getElementById("backBtn");
+    const userBtn = document.getElementById("userBtn");
+    const logoutBox = document.getElementById("logoutBox");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    backBtn.addEventListener("click", () => {
+      window.location.href = "dashboard.html";
+    });
+
+    userBtn.addEventListener("click", () => {
+      logoutBox.classList.toggle("hidden");
+    });
+
+    logoutBtn.addEventListener("click", async () => {
+      await signOut(window.auth);
+      alert("로그아웃 되었습니다.");
+      window.location.href = "login.html";
+    });
+  </script>
+
+  <!-- ✅ 학습 로직 (영상 + 챗봇 + 퀴즈) -->
+  <script type="module">
+    // 🎬 YouTube 영상 로드
+    const url = localStorage.getItem("videoURL");
+    if (!url) {
+      alert("영상 URL이 없습니다. 다시 선택해주세요.");
+      window.location.href = "lecture.html";
+    } else {
+      try {
+        const videoId = new URL(url).searchParams.get("v");
+        document.getElementById("lectureFrame").src = `https://www.youtube.com/embed/${videoId}`;
+      } catch {
+        alert("잘못된 링크입니다.");
+        window.location.href = "lecture.html";
+      }
+    }
+
+    // 💬 챗봇 / 퀴즈 로직
+    const chatBox = document.getElementById("chatBox");
+    const input = document.getElementById("chatInput");
+    const sendBtn = document.getElementById("sendBtn");
+    const quizToggle = document.getElementById("quizToggle");
+    sendBtn.addEventListener("click", handleChat);
+    input.addEventListener("keydown", (e) => e.key === "Enter" && handleChat());
+
+    function appendMessage(role, text) {
+      const msg = document.createElement("div");
+      msg.className = `msg ${role}`;
+      msg.textContent = text;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // 퀴즈 데이터
+    const quizList = [
+      { q: "HTML의 약자는 무엇일까요?", a: "hypertext markup language" },
+      { q: "CSS는 무엇의 약자일까요?", a: "cascading style sheets" },
+      { q: "AI는 무엇을 뜻할까요?", a: "artificial intelligence" },
+      { q: "자바스크립트 파일의 확장자는?", a: ".js" },
+    ];
+
+    let currentQuiz = null;
+
+    function handleChat() {
+      const text = input.value.trim();
+      if (!text) return;
+      appendMessage("user", text);
+      input.value = "";
+
+      // 퀴즈 정답 중일 때
+      if (currentQuiz) {
+        if (text.toLowerCase() === currentQuiz.a.toLowerCase()) {
+          appendMessage("bot", "✅ 정답이에요! +10점!");
+        } else {
+          appendMessage("bot", `❌ 오답이에요! 정답은 "${currentQuiz.a}"`);
+        }
+        currentQuiz = null;
+        return;
+      }
+
+      // 일반 대화
+      appendMessage("bot", "🤖 생각 중...");
+
+      setTimeout(() => {
+        // 25% 확률로 퀴즈 출제
+        if (quizToggle.checked && Math.random() < 0.25) {
+          const quiz = quizList[Math.floor(Math.random() * quizList.length)];
+          appendMessage("quiz", `🧩 퀴즈! ${quiz.q}`);
+          currentQuiz = quiz;
+        } else {
+          const responses = [
+            "좋은 질문이에요!",
+            "그 부분은 강의에서 다뤄질 거예요.",
+            "흥미로운 포인트네요.",
+            "조금 더 설명해 드릴게요!",
+          ];
+          const reply = responses[Math.floor(Math.random() * responses.length)];
+          const lastBotMsg = chatBox.querySelector(".msg.bot:last-child");
+          if (lastBotMsg) lastBotMsg.textContent = reply;
+        }
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }, 800);
+    }
+  </script>
 </body>
 </html>
