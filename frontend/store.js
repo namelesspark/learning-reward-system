@@ -3,12 +3,37 @@ import { getUserScore, addUserScore } from './score.js';
 
 // 상품 목록 (점수 단위)
 const products = [
-  { id: 1, name: '프리미엄 헤드폰', price: 100 },
-  { id: 2, name: '무선 키보드', price: 80 },
-  { id: 3, name: '스마트 워치', price: 250 },
-  { id: 4, name: '블루투스 스피커', price: 70 },
-  { id: 5, name: '웹캠 HD', price: 90 },
-  { id: 6, name: '무선 마우스', price: 50 },
+  { id: 1, name: '바나나킥', price: 2500, img: 'images/Bananakick.png'},
+  { id: 2, name: '바나나맛 우유', price: 2500, img: 'images/bananamilk.png' },
+  { id: 3, name: '짜파게티', price: 2000, img: 'images/Chapagetti.png' },
+  { id: 4, name: '코카콜라', price: 2200, img: 'images/Cocacola.png' },
+  { id: 5, name: 'cu 5000원권', price: 5200, img: 'images/cu.png' },
+  { id: 6, name: '선물', price: 500, img: 'images/gift.png' },
+  { id: 7, name: 'gs25 5000원권', price: 5200, img: 'images/gs25.png' },
+  { id: 8, name: '펩시콜라', price: 2000, img: 'images/pepsi.png' },
+  { id: 9, name: '선물', price: 500, img: 'images/gift.png' },
+  { id: 10, name: '선물', price: 502, img: 'images/gifte.png' },
+  { id: 1, name: '바나나킥', price: 2500, img: 'images/Bananakick.png'},
+  { id: 2, name: '바나나맛 우유', price: 2500, img: 'images/bananamilk.png' },
+  { id: 3, name: '짜파게티', price: 2000, img: 'images/Chapagetti.png' },
+  { id: 4, name: '코카콜라', price: 2200, img: 'images/Cocacola.png' },
+  { id: 5, name: 'cu 5000원권', price: 5200, img: 'images/cu.png' },
+  { id: 6, name: '선물', price: 500, img: 'images/gift.png' },
+  { id: 7, name: 'gs25 5000원권', price: 5200, img: 'images/gs25.png' },
+  { id: 8, name: '펩시콜라', price: 2000, img: 'images/pepsi.png' },
+  { id: 9, name: '선물', price: 500, img: 'images/gift.png' },
+  { id: 10, name: '선물', price: 502, img: 'images/gifte.png' },
+  { id: 1, name: '바나나킥', price: 2500, img: 'images/Bananakick.png'},
+  { id: 2, name: '바나나맛 우유', price: 2500, img: 'images/bananamilk.png' },
+  { id: 3, name: '짜파게티', price: 2000, img: 'images/Chapagetti.png' },
+  { id: 4, name: '코카콜라', price: 2200, img: 'images/Cocacola.png' },
+  { id: 5, name: 'cu 5000원권', price: 5200, img: 'images/cu.png' },
+  { id: 6, name: '선물', price: 500, img: 'images/gift.png' },
+  { id: 7, name: 'gs25 5000원권', price: 5200, img: 'images/gs25.png' },
+  { id: 8, name: '펩시콜라', price: 2000, img: 'images/pepsi.png' },
+  { id: 9, name: '선물', price: 500, img: 'images/gift.png' },
+  { id: 10, name: '선물', price: 502, img: 'images/gifte.png' },
+
 ];
 
 let uid = null;
@@ -32,12 +57,21 @@ function render() {
   products.forEach(p => {
     const card = document.createElement('div');
     card.className = 'product-card' + (selected.has(p.id) ? ' selected' : '');
+
+    const src = p.img || `images/${p.id}.png`;
     card.innerHTML = `
-      <div class="product-image">🎁</div>
+      <div class="product-image">
+        <img src="${src}" alt="${p.name}" />
+      </div>
       <div class="product-name">${p.name}</div>
       <div class="product-price">${p.price} 점</div>
       <button class="select-btn">${selected.has(p.id) ? '선택됨' : '선택하기'}</button>
     `;
+
+    const imgEl =card.querySelector('.product-image img');
+    imgEl.onerror = () => { imgEl.src = 'images/gift.png'; };
+
+  
     card.querySelector('.select-btn').onclick = () => {
       selected.has(p.id) ? selected.delete(p.id) : selected.add(p.id);
       render();
