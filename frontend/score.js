@@ -1,3 +1,7 @@
+// ========================================
+// 📊 score.js — Firestore 점수 관리
+// ========================================
+
 import { doc, getDoc, updateDoc, increment } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 // 사용자 점수 불러오기

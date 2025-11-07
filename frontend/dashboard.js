@@ -2,10 +2,6 @@
 import { getUserScore, addUserScore, setUserScore } from './score.js';
 import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-
-
-
-
 // ================================
 // ✅ 로그인 상태 확인 및 정보 표시
 // ================================
@@ -13,8 +9,8 @@ onAuthStateChanged(window.auth, async (user) => {
   if (user) {
     document.getElementById('userName').textContent = user.displayName || user.email;
 
-    // Firestore에서 점수 불러오기
-// 통합 점수 모듈로 점수 불러오기
+  // Firestore에서 점수 불러오기
+  // 통합 점수 모듈로 점수 불러오기
     const score = await getUserScore(user.uid);
     document.getElementById('userScore').textContent = score;
 
@@ -38,7 +34,7 @@ userBtn.addEventListener('click', () => {
 logoutBtn.addEventListener('click', async () => {
   await signOut(window.auth);
   alert('로그아웃 되었습니다.');
-  window.location.href = 'login.html';
+  window.location.href = 'index.html';
 });
 
 // ================================

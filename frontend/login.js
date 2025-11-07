@@ -1,13 +1,12 @@
 // ========================================
-// 🔐 login.js — Firebase Auth & UI Control
+// 🔐 login.js
 // ========================================
-
-// Firebase Auth 관련 함수
 import { 
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     sendPasswordResetEmail,
-    updateProfile
+    updateProfile,
+    RecaptchaVerifier
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 import {
@@ -20,6 +19,28 @@ import {
     where
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
+// Firebase 대기
+function waitForFirebase() {
+    return new Promise((resolve) => {
+        const check = () => {
+            if (window.auth && window.db) resolve();
+            else setTimeout(check, 50);
+        };
+        check();
+    });
+}
+
+// reCAPTCHA 초기화
+async function initRecaptcha() {
+    if (!window.recaptchaVerifier) {
+        window.recaptchaVerifier = new RecaptchaVerifier(window.auth, 'recaptcha-container', {
+            'size': 'invisible',
+            'callback': () => {
+                console.log('reCAPTCHA verified');
+            }
+        });
+    }
+}
 
 // =========================
 // 🔄 폼 전환 함수들
@@ -52,11 +73,12 @@ function showFindId() {
     document.getElementById('findIdForm').classList.remove('hidden');
 }
 
-
 // =========================
 // 🔑 로그인
 // =========================
 async function login() {
+    await waitForFirebase();
+    
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value.trim();
 
@@ -66,6 +88,9 @@ async function login() {
     }
 
     try {
+        // reCAPTCHA 초기화
+        await initRecaptcha();
+        
         const userCredential = await signInWithEmailAndPassword(window.auth, email, password);
         console.log('로그인 성공:', userCredential.user);
         window.location.href = 'dashboard.html';
@@ -75,15 +100,16 @@ async function login() {
     }
 }
 
-
 // =========================
 // 🧾 회원가입
 // =========================
 async function signup() {
-    const name = document.getElementById('signupName').value;
-    const email = document.getElementById('signupEmail').value;
-    const password = document.getElementById('signupPassword').value;
-    const passwordConfirm = document.getElementById('signupPasswordConfirm').value;
+    await waitForFirebase();
+    
+    const name = document.getElementById('signupName').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const password = document.getElementById('signupPassword').value.trim();
+    const passwordConfirm = document.getElementById('signupPasswordConfirm').value.trim();
 
     if (!name || !email || !password || !passwordConfirm) {
         alert('모든 필드를 입력하세요');
@@ -133,12 +159,13 @@ async function signup() {
     }
 }
 
-
 // =========================
 // 🔄 비밀번호 재설정
 // =========================
 async function resetPassword() {
-    const email = document.getElementById('resetEmail').value;
+    await waitForFirebase();
+    
+    const email = document.getElementById('resetEmail').value.trim();
 
     if (!email) {
         alert('이메일을 입력하세요');
@@ -155,13 +182,14 @@ async function resetPassword() {
     }
 }
 
-
 // =========================
 // 🔍 아이디(이메일) 찾기
 // =========================
 async function findId() {
-    const name = document.getElementById('findName').value;
-    const partial = document.getElementById('findPartialEmail').value;
+    await waitForFirebase();
+    
+    const name = document.getElementById('findName').value.trim();
+    const partial = document.getElementById('findPartialEmail').value.trim();
 
     if (!name || !partial) {
         alert('이름과 이메일 일부를 입력하세요');
@@ -179,10 +207,9 @@ async function findId() {
         });
 
         if (foundEmail) {
-
             const masked = foundEmail.replace(/(.{2})(.*)(@.*)/,
                 (_, a, b, c) => a + '*'.repeat(b.length) + c);
-            alert(`등록된 이메일: ${foundEmail}`);
+            alert(`등록된 이메일: ${masked}`);
         } else {
             alert('일치하는 사용자를 찾을 수 없습니다.');
         }
@@ -193,7 +220,6 @@ async function findId() {
         alert('아이디 찾기 실패: ' + err.message);
     }
 }
-
 
 // =========================
 // 🌍 전역 함수 등록
@@ -206,5 +232,3 @@ window.login = login;
 window.signup = signup;
 window.resetPassword = resetPassword;
 window.findId = findId;
-
-alert

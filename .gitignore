@@ -11,3 +11,4 @@ prototype/env/
 # 빌드 결과물 무시
 prototype/dist/
 prototype/build/
+node_modules

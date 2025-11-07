@@ -1,8 +1,9 @@
-// init-firebase.js
+// Firebase imports
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
+// Firebase 설정
 const firebaseConfig = {
   apiKey: "AIzaSyAmGKMQT1TEPRKVl5ptIbWXoOjHjRysWiY",
   authDomain: "lrsystem-91ca1.firebaseapp.com",
@@ -13,8 +14,19 @@ const firebaseConfig = {
   measurementId: "G-ERNPFHHCKM"
 };
 
-//위에 부분 입력하기
+// Firebase 초기화
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-window.auth = getAuth(app);
-window.db = getFirestore(app);
+// 전역으로 노출
+window.auth = auth;
+window.db = db;
+
+console.log("✅ Firebase 초기화 완료");
+
+// App Check 비활성화 (개발 환경)
+// reCAPTCHA 문제 방지
+if (typeof window !== 'undefined') {
+    window.recaptchaVerifier = null;
+}

@@ -1,16 +1,19 @@
 # 유튜브 API 관련 서비스
 # 유튜브 처리 구현 로직
+from googleapiclient.discovery import build
+import isodate
 from youtube_transcript_api import YouTubeTranscriptApi
+from config import Config
 import re
-import yt_dlp
 
+YOUTUBEDATA_API_KEY = Config.YOUTUBEDATA_API_KEY
+youtube = build('youtube', 'v3', developerKey=YOUTUBEDATA_API_KEY)
 
 def extract_video_id(url): # 유튜브 URL에서 비디오 ID 추출
     patterns = [
         r'(?:https?://)?(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)([a-zA-Z0-9_-]{11})',
         r'(?:https?://)?(?:www\.)?youtube\.com/embed/([a-zA-Z0-9_-]{11})'
     ]
-
     for pattern in patterns:
         match = re.search(pattern, url)
         if match:
@@ -59,54 +62,43 @@ def get_transcript_from_youtube(video_id): # 유튜브 자막 가져오기 호�
         return None
 
 
+def extract_video_length(video_url):  # API를 통해 영상 길이 가져오기
+    try:
+        video_id = extract_video_id(video_url)
+        print(f"🎬 영상 길이 조회 중: {video_id}")
 
-def download_audio(video_id): # 유튜브 오디오 다운로드(Whisper용)
-    try: 
-        print(f"🎧 오디오 다운로드 시도: {video_id}")
-        ydl_opts = { # 오디오 전용 다운로드 옵션
-            'format': 'bestaudio/best',
-            'outtmpl': f'/tmp/{video_id}.%(ext)s',
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '192',
-            }],
+        response = youtube.videos().list( # YouTube Data API 요청
+            part="contentDetails",
+            id=video_id
+        ).execute()
+
+        if not response["items"]:
+            raise Exception("영상 정보를 찾을 수 없습니다.")
+
+        # ISO 8601 형식(Pt5M10S 등)을 초 단위로 변환
+        duration_iso = response["items"][0]["contentDetails"]["duration"]
+        duration_seconds = int(isodate.parse_duration(duration_iso).total_seconds())
+        print(f"✅ 영상 길이: {duration_seconds}초")
+        return {
+            "video_id": video_id,
+            "duration": duration_seconds
         }
 
-        # 다운로드
-        url = f'https://www.youtube.com/watch?v={video_id}'
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([url])
-        
-        audio_path = f'/tmp/{video_id}.mp3'
-        print(f"✅ 오디오 다운로드 완료: {audio_path}")
-        
-        return audio_path
-
     except Exception as e:
-        print(f"❌ 오디오 다운로드 실패: {e}")
-        return None
-
-
+        print(f"❌ 영상 길이 추출 실패: {e}")
 
 
 def get_transcript(video_url): # 자막 추출 메인 함수 / 호출: main.py의 /api/video/load
     video_id = extract_video_id(video_url)
     
-    # 1순위: YouTube 자막
+    # YouTube 자막
     transcript = get_transcript_from_youtube(video_id)
-    if transcript:
-        return {
-            'video_id': video_id,
-            'transcript': transcript
-        }
     
-    # 2순위: Whisper (오디오 다운로드만 하고 whisper_service로 넘김)
-    print("⚠️  YouTube 자막 없음 → Whisper 사용")
-    audio_path = download_audio(video_id)
+    # 영상 길이
+    video_len = extract_video_length(video_url)
     
     return {
         'video_id': video_id,
-        'audio_path': audio_path,
-        'needs_whisper': True
+        'transcript': transcript,
+        'duration': video_len.get("duration", 600)
     }

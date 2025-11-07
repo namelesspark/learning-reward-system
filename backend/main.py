@@ -1,43 +1,54 @@
 # Flask 메인 애플리케이션 설정
-
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from config import Config
 import youtube_service
 import whisper_service
 import quiz_service
+import quiz_timing
 import chat_service
+import random
+import re
 
 app = Flask(__name__)
-CORS(app, origins=Config.CORS_ORIGINS)
-
+CORS(app, origins="*")
 sessions = {} # 세션 데이터 저장용 (간단한 구현)
 
-@app.route('/api/video/load', methods=['POST'])
-def load_video(): # 비디오 로드 및 자막 추출
-    data = request.json
-    video_url = data.get('video_url')
-    user_id = data.get('user_id', 'guest')
 
+@app.route('/api/video/load', methods=['POST'])
+def load_video(): # 비디오 로드 및 자막, 영상 시간 추출
     try:
+        data = request.json
+        video_url = data.get('video_url')
+        user_id = data.get('user_id', 'guest')
+
         print(f"🌐 비디오 로드 요청: {video_url}")
-        result = youtube_service.get_transcript(video_url) # 자막 추출 시도
-        if result.get('needs_whisper'):
-            audio_path = result['audio_path']
-            transcript = whisper_service.transcribe_audio(audio_path) # Whisper 전사
-            result['transcript'] = transcript
+
+        result = youtube_service.get_transcript(video_url) # 자막, 영상 길이
+        transcript = result.get('transcript')
+        duration = result.get('duration', 600)
+        if not transcript:
+            raise Exception("자막을 불러올 수 없습니다.")
+
+        quiz_schedule = quiz_timing.get_quiz_schedule(duration, num_quizzes=5)
 
         # 세션에 저장
         sessions[user_id] = {
             'video_id': result['video_id'],
             'transcript': result['transcript'],
-            'current_score': 0
+            'current_score': 0,
+            'duration': duration,
+            'quiz_schedule': quiz_schedule,
+            'conversation_history': []
         }
 
         return jsonify({
             'success': True,
             'video_id': result['video_id'],
-            'transcript': result['transcript']
+            'duration': duration,
+            'quiz_schedule': quiz_schedule,
+            'transcript_preview': transcript['text'][:200],  # 미리보기용
+            'source': transcript.get('source', 'unknown')
         })
     
     except Exception as e:
@@ -47,36 +58,45 @@ def load_video(): # 비디오 로드 및 자막 추출
             'error': str(e)
         }), 400
 
+
+
+
 @app.route('/api/quiz/generate', methods=['POST'])
 def generate_quiz():
     try:
         data = request.json
         user_id = data.get('user_id', 'guest')
-        timestamp = data.get('timestamp', 0)
-        
-        # 세션에서 자막 가져오기
-        if user_id not in sessions:
-            return jsonify({
-                'success': False,
-                'error': '먼저 영상을 로드하세요'
-            }), 400
-        
-        transcript_text = sessions[user_id]['transcript']['text']
-        
+        video_id = data.get('video_id')
+        num_quizzes = int(data.get('num_quizzes', 5))
+
+        # 1) 우선 user_id로 찾기
+        session = sessions.get(user_id)
+
+        # 2) 없으면 video_id 기준으로 찾기 (fallback)
+        if not session and video_id:
+            for uid_key, s in sessions.items():
+                if s.get('video_id') == video_id:
+                    session = s
+                    print(f"ℹ️ 세션을 video_id로 찾음. user_id:{uid_key}")
+                    break
+
+        if not session:
+            raise ValueError("세션이 없습니다. 먼저 영상을 로드하세요.")
+
+        transcript_text = session.get('transcript', {}).get('text', '')
+        if not transcript_text:
+            raise ValueError("Transcript 데이터가 없습니다.")
+
         # 퀴즈 생성
-        quiz = quiz_service.generate_quiz(transcript_text, timestamp, None)
-        
-        return jsonify({
-            'success': True,
-            'quiz': quiz
-        })
-        
+        quiz = quiz_service.generate_quiz(transcript_text, 0, num_quizzes)
+
+        return jsonify({'success': True, 'quizzes': quiz})
+
     except Exception as e:
         print(f"❌ 에러: {e}")
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
 
 
 @app.route('/api/quiz/submit', methods=['POST'])
@@ -111,24 +131,11 @@ def submit_quiz():
             'error': str(e)
         }), 500
 
+
+
+
 @app.route('/api/chat', methods=['POST'])
 def chat_endpoint():
-    """
-    채팅 API
-    
-    Request:
-        {
-            "user_id": "test123",
-            "message": "이 강의의 주제가 뭐야?"
-        }
-    
-    Response:
-        {
-            "success": true,
-            "response": "이 강의는 신경망에 대한 내용입니다...",
-            "conversation_history": [...]
-        }
-    """
     try:
         data = request.json
         user_id = data.get('user_id', 'guest')

@@ -10,7 +10,7 @@ let refreshInterval = null; // ⏰ 5분 자동 갱신 타이머
 // =======================================
 onAuthStateChanged(window.auth, async (user) => {
   if (!user) {
-    window.location.href = 'login.html';
+    window.location.href = 'index.html';
     return;
   }
 
@@ -46,7 +46,7 @@ async function loadRanking() {
   if (snapshot.empty) {
     rankingContainer.innerHTML =
       '<p style="text-align:center; color:#666;">등록된 사용자가 없습니다.</p>';
-    document.getElementById('myRank').textContent = '-';
+    document.getElementById('myRank').textContent = '순위가 매겨지지 않았습니다.';
     // 최근 갱신 시간도 업데이트
     const now = new Date().toLocaleTimeString();
     document.getElementById('lastUpdateText').textContent = `최근 갱신: ${now}`;

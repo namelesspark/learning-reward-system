@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CASH CLASS - 로그인</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <div class="container">
+        <div class="login-box">
+            <h1>🎓 CASH CLASS</h1>
+            <p class="subtitle">학습하고, 성장하고, 랭킹을 올리세요!</p>
+
+            <!-- 로그인 폼 -->
+            <div id="loginForm" class="form-container">
+                <h2>로그인</h2>
+                <input type="email" id="loginEmail" placeholder="이메일">
+                <input type="password" id="loginPassword" placeholder="비밀번호">
+                <button onclick="login()">로그인</button>
+                
+                <div class="links">
+                    <a href="#" onclick="showSignup()">회원가입</a>
+                    <a href="#" onclick="showFindId()">아이디 찾기</a>
+                    <a href="#" onclick="showFindPassword()">비밀번호 찾기</a>
+                </div>
+            </div>
+
+            <!-- 회원가입 폼 -->
+            <div id="signupForm" class="form-container hidden">
+                <h2>회원가입</h2>
+                <input type="text" id="signupName" placeholder="이름">
+                <input type="email" id="signupEmail" placeholder="이메일">
+                <input type="password" id="signupPassword" placeholder="비밀번호">
+                <input type="password" id="signupPasswordConfirm" placeholder="비밀번호 확인">
+                <button onclick="signup()">가입하기</button>
+                
+                <div class="links">
+                    <a href="#" onclick="showLogin()">로그인으로 돌아가기</a>
+                </div>
+            </div>
+
+            <!-- 비밀번호 찾기 폼 -->
+            <div id="findPasswordForm" class="form-container hidden">
+                <h2>비밀번호 찾기</h2>
+                <p>가입한 이메일로 비밀번호 재설정 링크를 보내드립니다.</p>
+                <input type="email" id="resetEmail" placeholder="이메일">
+                <button onclick="resetPassword()">재설정 링크 보내기</button>
+                
+                <div class="links">
+                    <a href="#" onclick="showLogin()">로그인으로 돌아가기</a>
+                </div>
+            </div>
+            <!-- 아이디 찾기 폼 -->
+            <div id="findIdForm" class="form-container hidden">
+                <h2>아이디 찾기</h2>
+                <p>가입 시 입력한 이름과 이메일 일부를 이용해 아이디(이메일)를 확인합니다.</p>
+                <input type="text" id="findName" placeholder="이름">
+                <input type="email" id="findPartialEmail" placeholder="이메일 일부 (예: example@)">
+                <button onclick="findId()">아이디 찾기</button>
+                
+                <div class="links">
+                    <a href="#" onclick="showLogin()">로그인으로 돌아가기</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    <div id="recaptcha-container"></div>
+    <style>
+    #recaptcha-container { display: none; }
+    </style>
+    <script type="module" src="init-firebase.js"></script>
+    <script type="module" src="login.js"></script>
+</body>
+</html>

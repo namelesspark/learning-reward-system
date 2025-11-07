@@ -76,6 +76,8 @@ h1 {
   text-align: center;
   transition: 0.3s;
   cursor: pointer;
+  max-width: 180px;
+  min-height: 250px; /* 카드 높이 고정 옵션, 필요 시 */
 }
 
 .product-card:hover {
@@ -88,10 +90,19 @@ h1 {
   background-color: #f4f3ff;
 }
 
-.product-image {
-  font-size: 50px;
-  margin-bottom: 10px;
+.product-image img {
+  width: 100px;      /* 원하는 최대 너비로 조절 */
+  height: 100px;     /* 원하는 최대 높이로 조절 */
+  object-fit: contain; /* 비율 유지하면서 영역 내에 맞춤 */
+  margin: 0 auto;
+  display: block;
 }
+
+.product-image {
+  display:flex; justify-content:center; align-items:center; height:100px;
+}
+
+
 
 .product-name {
   font-weight: 600;
@@ -132,4 +143,34 @@ h1 {
 
 .purchase-btn:hover {
   transform: translateY(-3px);
+}
+
+.product-image img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+/* ✅ 상품이 많을 때 스크롤바 표시 */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+  max-height: 500px;      /* 높이 제한 (필요시 조정) */
+  overflow-y: auto;       /* 스크롤 생성 */
+  padding-right: 10px;    /* 스크롤바 공간 확보 */
+}
+
+/* ✅ 스크롤바 스타일 (선택) */
+.products-grid::-webkit-scrollbar {
+  width: 8px;
+}
+.products-grid::-webkit-scrollbar-thumb {
+  background: #bbb;
+  border-radius: 4px;
+}
+.products-grid::-webkit-scrollbar-thumb:hover {
+  background: #888;
 }

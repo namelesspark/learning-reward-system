@@ -19,36 +19,13 @@
       <h1>🛍️ 상점</h1>
       <p class="subtitle">원하는 상품을 선택하고 점수로 결제하세요</p>
 
-      <div id="productsGrid" class="products-grid">
-        <!-- 상품이 동적으로 추가됩니다 -->
-      </div>
+      <div id="productsGrid" class="products-grid"></div>
 
       <div class="actions">
         <button id="purchaseBtn" class="purchase-btn">결제하기</button>
       </div>
     </div>
   </div>
-
-  <!-- Firebase SDK -->
- <!-- <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-    import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAmGKMQT1TEPRKVl5ptIbWXoOjHjRysWiY",
-      authDomain: "lrsystem-91ca1.firebaseapp.com",
-      projectId: "lrsystem-91ca1",
-      storageBucket: "lrsystem-91ca1.firebasestorage.app",
-      messagingSenderId: "899913314717",
-      appId: "1:899913314717:web:643bd6abd196f10789bf74",
-      measurementId: "G-ERNPFHHCKM"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    window.auth = getAuth(app);
-    window.db = getFirestore(app);
-  </script> -->
 
   <script type="module" src="init-firebase.js"></script>
   <script type="module" src="store.js"></script>

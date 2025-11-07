@@ -5,36 +5,54 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>학습하기</title>
   <link rel="stylesheet" href="lecture_view.css">
+
 </head>
 <body>
   <div class="container">
     <div class="lecture-box">
       <header class="top-bar">
-        <button id="backBtn" class="back-btn">← 이전으로</button>
+
+        <div class="left-group">
+          <button id="backBtn" class="back-btn">← 이전으로</button>
+          <div class="quiz-controls">
+            <label>
+              <input id="quizToggle" type="checkbox" checked>
+              🧩 퀴즈 ON/OFF
+            </label>
+            <label for="quizCount">문제 개수:</label>
+            <select id="quizCount">
+              <option value="3">3문제</option>
+              <option value="5" selected>5문제</option>
+              <option value="7">7문제</option>
+              <option value="10">10문제</option>
+            </select>
+            <input id="quizConfirm" type="button" value="퀴즈 시작">
+          </div>
+        </div>
+
         <div class="user-info">
           <button id="userBtn" class="user-btn">👤 <span id="userName">사용자</span></button>
-          <div id="logoutBox" class="logout-box hidden">
+          
+          <div class="score-box">
+            내 점수: <span id="userScore">0</span>
+          </div>
+
+          <div id="logoutBox" class="logout-box">
             <button id="logoutBtn" class="logout-btn">로그아웃</button>
           </div>
         </div>
-        <div class="score-box">내 점수: <span id="userScore">0</span></div>
+
       </header>
+
 
       <main class="study-layout">
         <div class="video-area">
           <iframe id="lectureFrame" frameborder="0" allowfullscreen></iframe>
-          <div class="quiz-toggle">
-            <label>
-              <input type="checkbox" id="quizToggle" checked>
-              🧩 퀴즈 ON/OFF
-            </label>
-          </div>
         </div>
-
         <div class="chat-area">
-          <h3>💬 학습 도우미 챗봇</h3>
+          <h3>💬 ChatBot</h3>
           <div id="chatBox" class="chat-box">
-            <div class="msg bot">안녕하세요! 👋 학습 내용에 대해 질문할 수 있어요.</div>
+            <div class="msg bot">학습 내용에 대해 질문하세요.</div>
           </div>
           <div class="chat-input">
             <input id="chatInput" type="text" placeholder="질문을 입력하세요..." />
@@ -45,10 +63,19 @@
     </div>
   </div>
 
+  <!-- 퀴즈 모달-->
+   <div id="quizModal" class="modal hidden">
+    <button id="clozeQuiz" class="close-btn" aria-labe="퀴즈 닫기"></button>
+    <div class='modal-content'>
+      <span id="closeModal" class="close">&times</span>
+      <h2>퀴즈</h2>
+      <div id="quizContainer">
+        <!--퀴즈 문항 출력-->
+      </div>
+      <button id="quizSubmit">제출</button>
+   </div>
 
   <script type="module" src="init-firebase.js"></script>
   <script type="module" src="lecture_view.js"></script>
-
 </body>
 </html>
-

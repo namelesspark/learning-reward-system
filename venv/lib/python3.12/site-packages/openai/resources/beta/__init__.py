@@ -8,14 +8,6 @@ from .beta import (
     BetaWithStreamingResponse,
     AsyncBetaWithStreamingResponse,
 )
-from .chatkit import (
-    ChatKit,
-    AsyncChatKit,
-    ChatKitWithRawResponse,
-    AsyncChatKitWithRawResponse,
-    ChatKitWithStreamingResponse,
-    AsyncChatKitWithStreamingResponse,
-)
 from .threads import (
     Threads,
     AsyncThreads,
@@ -32,14 +24,22 @@ from .assistants import (
     AssistantsWithStreamingResponse,
     AsyncAssistantsWithStreamingResponse,
 )
+from .vector_stores import (
+    VectorStores,
+    AsyncVectorStores,
+    VectorStoresWithRawResponse,
+    AsyncVectorStoresWithRawResponse,
+    VectorStoresWithStreamingResponse,
+    AsyncVectorStoresWithStreamingResponse,
+)
 
 __all__ = [
-    "ChatKit",
-    "AsyncChatKit",
-    "ChatKitWithRawResponse",
-    "AsyncChatKitWithRawResponse",
-    "ChatKitWithStreamingResponse",
-    "AsyncChatKitWithStreamingResponse",
+    "VectorStores",
+    "AsyncVectorStores",
+    "VectorStoresWithRawResponse",
+    "AsyncVectorStoresWithRawResponse",
+    "VectorStoresWithStreamingResponse",
+    "AsyncVectorStoresWithStreamingResponse",
     "Assistants",
     "AsyncAssistants",
     "AssistantsWithRawResponse",
